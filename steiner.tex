@@ -1,0 +1,260 @@
+\chapter{Path selection}
+\label{chap:steiner}
+
+\section{Subproblems}
+
+\subsection{Euclidean Travelling Salesman Problem}
+Given a set of n 2D points in a plane find a minimum cost tour of all the points, visiting every point exactly once. We use Christofides algorithm \cite{christofides} as the approximation heuristic for computing TSP route of a set of points.
+
+\subsection{Euclidean minimum Steiner Tree problem}
+Given a set P of points in a 2D plane as input, the output is a network of line segements connecting all of the points in S, with the smallest total (euclidean) length. Note that not all of these line segments need to be incident on any of the points in S. Which means, the algorithm is free to use additional points from the plane (if necessary) to produce the smallest total length network. These additional points are called Steiner points.
+The location nodes computed earlier, form the set P, and we generate the EMST from it, which will be used in the pseudo code to follow the section.
+We chose this data structure over MST because it is the goal of the heuristic to divide the set of location nodes into multiple sets with approximately the same TSP time (time taken by a MULE to visit all of them), and the cost of ETSP on a set is atmost twice the cost of the EMST on it, therefore it should be reasonable to use the Steiner tree traversal as a guide for partitioning. Also, in the case where the field also includes obstacles, Steiner trees lend themselves naturally to cover all the points due the virtue of Steiner points \cite{oaest99} (we will not cover the obstacle avoiding case, but it is included in future works chapter).
+We use the exact solution finder software GeoSteiner \cite{geosteiner1} \cite{geosteiner2} \cite{geosteiner3} for computing Steiner trees.
+
+\section{Heuristic}
+
+\subsection{Aim}
+The aim of this heuristic is to partition the set of location nodes computed in the previous stage, and additional Steiner points added during the run of the heuristic, into minimum number of subsets, such that
+
+\begin{itemize}
+\item Each of the subsets has a TSP tour length (in units of time) less than a given value $L$, and for any two sets $S_{i}$ and $S_{j}$, $S_{i} \cap S_{j} \le 1$.
+\item Let $V$ be the set of all subsets $S_{i}$. Let $E$ be the set of pairs of subsets $(S_{i},S_{j})$ such that $S_{i} \cap S_{j} = 1$. Then the graph $G(V,E)$ should be a connected graph.
+\end{itemize}
+
+We assume that there are three main contributions to the time a MULE spends in a network while collecting data: Travelling from one location node to another $t_{TSP}$, talking to sensors belonging to a location node $t_{LS}$, talking to other MULEs/Base station $t_{MBS}$. The last two's contribution in any subset of location nodes assigned to the same MULE, is small compared to $t_{TSP}$. We first describe the heuristic which ignores the last two contributions ($t_{LS}$ and $t_{MBS}$). Then we modify it to take into account the time $t_{LS}$, because MULE to MULE data transfer times are shorter, as MULEs use data aggregation while sending data to fellow a MULE or BS, and they use higher bandwidth too. The $t_{LS}$ for each location node can be given as an input, or observed before running the heuristic, by simply sending one MULE on a tour of all the location nodes in the field to measure and record such times beforehand.
+
+
+
+\subsection{Description}
+The overall startegy is to create an EMST of the location nodes and then divide this tree into subgraphs, using the tree edges as the guide. Each subgraph's set of vertices will be covered by 1 MULE (henceforth, this set of vertices will be called a subtour), and the subgraph's weight will be our estimate of how long will a MULE take to cover it (because of the theorem that the length of the TSP tour of a set of 2D points is at most twice the weight of their EMST, and the property of an EMST that, any connected subgraph of an EMST is also the EMST of the constituent vertices).
+
+We will now describe the algorithm that will not take in to account $t_{LS}$,and will be used to genrate simulation results. Given any tree T, we start from the given root node $root$. $root$ then becomes the current node $curr$. Then similar to Prim's algorithm, we first mark $curr$ as visited, then we insert all the incident edges (to the current vertex) with unvisited vertices to the min-heap $edgeHeap$. There are 2 stages for computation of a tour for a MULE, coded in 2 inner while loops.
+
+In the first stage (the first inner while loop), every time we select and delete an edge (v1,v2) from $edgeHeap$, we we also insert all the edges incident to v1, with unvisited vertices at the other end, to this heap; and then we insert v1 to our $currSet$. In this first inner while loop, we keep popping edges from $edgeHeap$ until either $edgeHeap$ becomes empty or, adding any more edges to $currSet$ from $edgeHeap$ will result in its total weight to exceed $\frac{L}{hApprox}$ (by this, we are ensuring that the TSP weight of our points set $currSet$ does not exceed L). Here, $hApprox$ depends completely upon the heuristic used for TSP problem, which is approximation ratio of the heuristic used for TSP, $\times$ 2. If optimal algorithm is used, it is 2 (because the optimal TSP length of  a set of 2D points is bounded by 2 $\times$ the total length of their EMST). Since we have used Christofides heuristic for TSP, whose approximation ratio is $\frac{3}{2}$, therefore $hApprox$ is 3 here.
+
+Note that any Steiner point whose all adjacent vertices belong to same subtour is useless, and should be eliminated form the subtour, becuase, neither does it function as a connecting vertex between different subtours, nor is it a location node. We do this by $cleanTour$ function here, and everytime we test the inclusion of a new edge in the second stage.
+
+In the second stage, we calculate the actual TSP of our point set and continue popping edges from $edgeHeap$, to add to $currSet$. Before adding it to $currSet$, we test whether its inclusion will make $currT$ exceed $L$ or not. If yes, $currSet$ is our final point set for this MULE, otherwise, we repeat the second inner while loop until we do, and then our $currSet$ for this MULE is final. The edge records still left in the Heap form the boundary of the vertices in $currSet$ ith respect to the Steiner tree, which are pushed in the $boundary$, from where our next $root$ for next MULE's point set to cover, is chosen.
+
+
+\begin{algorithm}
+\caption{Dividing the set vertices of a given Steiner tree into subsets of bounded TSP time}\label{euclid}
+\begin{algorithmic}
+\Function{greedySteiner}{A Steiner tree $T$ of 2D points in a plane, Starting vertex $root$, desired upper bound on latency $L$}\Comment{this function returns S: Set of tours, each with touring time $\le$ L}
+\State Set  $S$
+\State $N \gets$ number of vertices in T
+\State $queue$ boundary.push($root$) 
+\State $bool$ $visited[N]$
+\State $vertex$ curr 
+\For{$i \gets 1,N$}
+	\State $visited[i] \gets false$ 
+\EndFor
+\While{1}
+	\If{boundary.empty()}
+		\State break
+	\EndIf
+	\State $currT \gets 0.0$ 
+	\State $hApprox \gets 0.5$ 
+	\State $cycleWeight \gets 0.0$ 
+	\State Min\_heap $edgeHeap$  
+	\State $curr \gets root$ 
+	\State Set $currSet$, $tempSet$ 
+	\State $visited[curr] \gets true$ 
+	\State Set $U \gets$ all unvisited vertices adjacent to $cur$ 
+	\ForAll{ vertex $v$ in U}
+		\State $edgeHeap$.push(dist($v$,$curr$), ($v$,$curr$)) 
+	\EndFor
+
+	\State $currSet$.insert($curr$) 
+	\While{$\neg$ edgeHeap.empty()}
+		\State $nextWeight \gets edgeHeap$.top().first 
+		\State $currT \gets currT + nextWeight$ 
+		\If{$currT \geq hApprox \times L$}
+			break 
+		\EndIf
+		\State $curr \gets edgeHeap$.top().second.first 
+		\State $currSet.insert(curr)$ 
+		\State $visited[curr] \gets true$ 
+		\State $edgeHeap$.pop() 
+		\State $U$.clear() 
+		\State $U \gets$ all unvisited vertices adjacent to $cur$ 
+		\ForAll{ vertex $v$ in $U$}
+			\State $edgeHeap$.push(dist($v$,$curr$), ($v$,$curr$)) 
+		\EndFor
+	\EndWhile
+
+	\State $cleanTour(currSet)$
+\algstore{pag}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\begin{algorithmic}
+\algrestore{pag}
+	
+	\State Tour $currTour$ 
+	\State $tempSet \gets currSet$ 
+	\State $cycleWeight , currTour \gets TSPCircuit(tempSet)$
+
+	\While{$\neg$ edgeHeap.empty() and cycleWeight $<$ $L$}
+		\State $curr \gets edgeHeap$.top().second.first 
+		\State tempSet.insert(curr);
+		\State $cleanTour(tempSet)$
+		\State $cycleWeight, currTour \gets TSPCircuit(tempSet)$ 
+		\If{$cycleWeight$ $>$ $L$}
+			\State break 
+		\EndIf
+		\State currSet.insert($curr$);
+		\State $visited[curr] \gets true$ 
+		\State edgeHeap.pop() 
+		\State $U$.clear() 
+		\State $U  \gets$ all unvisited vertices adjacent to $cur$ 
+		\ForAll{ vertex $v$ in U}
+			\State edgeHeap.push(dist($v$,$curr$), ($v$,$curr$)) 
+		\EndFor
+	\EndWhile
+	
+	\State $S$.insert($currTour$) 
+
+	\While{$\neg$ heap.empty()}
+		\State $edge$ $e$ = $edgeHeap$.top().second;
+		\State $boundary$.push($e$.second);
+		\State $edgeHeap$.pop();
+	\EndWhile
+	
+	\If{$boundary$.empty()}
+		\State return false 
+	\EndIf
+
+\EndWhile
+\EndFunction
+
+\Function{cleanTour}{$vSet$ : the set of vertices in the current tour}
+	\Comment{Delete all Steiner vertices from $vSet$, whose all adjacent verices are in $vSet$ itself.}
+\EndFunction
+
+\end{algorithmic}
+\end{algorithm}
+
+\pagebreak
+
+Now we will describe the algorithm that will take in to account $t_{LS}$. Given any tree T, we start from the given root node $root$. $root$ then becomes the current node $curr$. Then similar to out first algorithm, we first mark $curr$ as visited, then we insert all the incident edges (to the current vertex) with unvisited vertices to the AVL tree $edgeRecords$. There are 2 stages for computation of a tour for a MULE, coded in 2 inner while loops.
+
+Here too, in the first stage (the first inner while loop), every time we select and delete an edge (v1,v2) from $edgeRecords$, we we also insert all the edges incident to v1, with unvisited vertices at the other end, to it (the AVL tree); and then we insert v1 to our $currSet$. In this first inner while loop, we keep selecting and deleting edges from $edgeRecords$ until either $edgeRecords$ becomes empty or, if we add anymore edges from the current edges $edgeRecords$ to $currSet$, $currT$ (($hApprox\times$ the sum of weights of the edges in $currSet$) + the sum of weights of unique vertices in $currSet$) will become larger than $\frac{L}{hApprox}$.
+
+Again, any Steiner point whose all adjacent vertices belong to same subtour are deleted, in same conditions as in Algorithm 1. In the second stage, we calculate the actual TSP of our point set and look for the smallest weighted record (the triplet of adjacent vertex weight, edge length, and the edge itelf) to add. Before adding it to $currSet$, we test whether its inclusion will make $currT$ exceed $L$ or not. If yes, $currSet$ is our final point set for this MULE, otherwise, we repeat the second inner while loop until we do, and then our $currSet$ for this MULE is final. The edge records still left in the AVL tree form the boundary of the vertices in $currSet$ ith resoect to the Steiner tree, which are pushed in the $boundary$, from where our next $root$ for next MULE's point set to cover, is chosen.
+
+\begin{algorithm}
+\caption{Dividing the set vertices of a given Steiner tree into subsets of bounded TSP time}\label{euclid2}
+\begin{algorithmic}
+\Function{greedySteiner}{$T$ : A Steiner tree of 2D points in a plane, $root$ : Starting vertex, $L$ : Desired upper bound on latency, $wArray$ : $wArray[i]$ is weight of the vertex $i$ and Steiner vertices have $0$ weight}\Comment{this function returns S: Set of tours, each with touring time $\le$ L}
+\State Set  $S$
+\State $N \gets$ number of vertices in T
+\State $queue$ boundary.push($root$) 
+\State $bool$ $visited[N]$
+\State $vertex$ curr 
+\For{$i \gets 1,N$}
+	\State $visited[i] \gets false$ 
+\EndFor
+\While{1}
+	\If{boundary.empty()}
+		\State break
+	\EndIf
+	\State $currT \gets 0.0$ 
+	\State $hApprox \gets 3$ 
+	\State $cycleWeight \gets 0.0$ 
+	\State AVLTree $edgeRecords$  \Comment{The records are compared by the sum of their first two members}
+	\State $curr \gets root$ 
+	\State Set $currSet$, $tempSet$ 
+	\State $visited[curr] \gets true$ 
+	\State Set $U \gets$ all unvisited vertices adjacent to $cur$ 
+	\ForAll{ vertex $v$ in U}
+		\State $edgeRecords$.insert(wArray[$v$], dist($v$,$curr$), ($v$,$curr$)) 
+	\EndFor
+	\State $currSet$.insert($curr$) 
+	\While{$edgeRecords$ is not empty}
+		\State $nRecord \gets nextRecord((L-currT),edgeRecord,hApprox)$
+		\State $currT \gets currT + nRecord.first + hApprox \times nRecord$.second 
+		\If{$currT \geq L$}
+			break 
+		\EndIf
+		\State $curr \gets nRecord.third.first$
+		\State $currSet.insert(curr)$ 
+		\State $visited[curr] \gets true$ 
+		\State $edgeRecord.delete(nRecord)$
+		\State $U$.clear() 
+		\State $U \gets$ all unvisited vertices adjacent to $cur$ 
+		\ForAll{ vertex $v$ in $U$}
+			\State $edgeRecords$.insert(wArray[$v$], dist($v$,$curr$), ($v$,$curr$)) 
+		\EndFor
+	\EndWhile
+	
+	\State $cleanTour(currSet)$
+	
+\algstore{pag2}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\begin{algorithmic}
+\algrestore{pag2}
+	
+	\State Tour $currTour$ 
+	\State $tempSet \gets currSet$ 
+	\State $cycleWeight , currTour \gets TSPCircuit(tempSet)$ \Comment{$cycleWeight$ includes the location nodes' weights}
+
+	\While{$\neg$ edgeRecords.empty() and $cycleWeight < L$}
+		\State $nRecord \gets nextRecord((L-currT),edgeRecord,hApprox)$
+		\State $tempSet$.insert($curr$);
+		\State $cleanTour(tempSet)$
+		\State $cycleWeight, currTour \gets TSPCircuit(tempSet)$ 
+		\If{$cycleWeight > L$}
+			\State break 
+		\EndIf
+		\State currSet.insert($curr$);
+		\State $visited[curr] \gets true$ 
+		\State $edgeRecord.delete(nRecord)$
+		\State $U$.clear() 
+		\State $U  \gets$ all unvisited vertices adjacent to $cur$ 
+		\ForAll{ vertex $v$ in U}
+			\State $edgeRecords$.insert(wArray[$v$], dist($v$,$curr$), ($v$,$curr$)) 
+		\EndFor
+	\EndWhile
+	
+	\State $S$.insert($currTour$) 
+	
+	\State $tempSet$.clear()
+	
+	\ForAll{Record $r$ in $edgeRecords$)}
+		\State $tempSet$.insert($r$.third.second);		\Comment{Inserting the boundary vertices in boundary}
+	\EndFor
+
+	\ForAll{Vertex $v$ in $tempSet$}
+		$boundary$.push($v$)
+	\EndFor
+	
+	\If{$boundary$.empty()}
+		\State break
+	\EndIf
+
+\EndWhile
+\EndFunction
+
+\Function{cleanTour}{$vSet$ : the set of vertices in the current tour}
+	\Comment{Delete all Steiner vertices from $vSet$, whose all adjacent verices are in $vSet$ itself.}
+\EndFunction
+
+\Function{nextRecord}{$L_R$ : remaining time, $edgeRecords$ : The AVL Tree to search, $hApprox$ : Approximation ratio of the heuristic used for TSP $\times$ 2}
+	\Comment{Do an inorder search for the least weighted record r in the tree such that $L_R < (r.first+ hApprox\times r.second)$}
+\EndFunction
+
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Scalability restriction and Minimum Latency}
+Consider the extreme case of low latency requirement, when 1 MULE is assigned to each edge of the Steiner tree. This must be the smallest latency supportable with this heuristic. Lets call this latency $L_{min}$. Let $w_{max}$ be the larget weight among the wieghts of the edges of the Steiner tree. Then, $L_{min} \ge w_{max}$.
+For any edge $(p,q)$ in the current Steiner tree, suppose upon recording the dfs sequence from the base station in the Steiner tree, $p$ appears before $q$; then $p$ is said to be near vertex, and $q$ is said to be the farther vertex. Then, for the case when $t_{LS}$ is not ignored, let $(i,j)$ be the maximum weighted edge with weight $w_{max}$. Also, let j be the farther 
+vertex. Then, $L_{min} \ge w_{max}+t_{LS}[j]$.
+
+Consider a single MULE collecting and aggregating all the data from all the sensor networks, and uploading it to the base station. For any sensor distribution, let the time taken by the MULE to upload the data be $T_{MBS}$. Now we will account for $t_{MBS}$. Consider the subtour containing the base station. The MULE assigned to this subtour is responsible for indirectly collecting and aggregating the data from all other subtours and delivering it to the base station. For this, it sends/recieves from other MULEs and the base station for total of $2 \times T_{MBS}$ units of time (simplistic assumption, neglecting time spent in P2P protocol between MULEs). Clearly, for any other subtour, its assigned MULE can not have a $t_{MBS}$ greater than $2 \times T_{MBS}$. So, if $T_{MBS}$ is significant contribution to total time taken by a MULE to cover its subtour, $L_{min} \ge w_{max}+t_{LS}[j]+2 \times T_{MBS}$.

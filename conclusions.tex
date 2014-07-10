@@ -1,0 +1,19 @@
+\chapter{Conclusions and Future work}
+
+In this thesis, we have provided a heuristic to collect data from a given sparse sensor network field and a latency bound. The heuristic outputs the number of MULEs required for achieving the latency goal. We have also deduced the minimum latency supportable for any sensor network field which uses this heuristic for data collection.
+
+However, we believe that the potential of application of Steiner trees for data collection may go further.
+
+\section{Data collection with convex obstacle avoidance}
+
+Consider the current problem of data collection from a sparse sensor network, inside a simple convex polygon as the containing field. If we place 2D obstacles in the field in the shape of convex polygons, the problem becomes data collection with convex obstacle avoidance.
+
+The Obstacle Avoiding Euclidean Steiner tree (OAEST) problem \cite{oaest99} is already known; Given a set P of points in a 2D plane contained within a polygon, with polygon holes inside it as obstacles, compute an EMST, such that no edge of the required graph may intersect with either the polygon boundary or the obstacle polygons inside it.
+
+If there is only single polygon obstacle, then \cite{oatsp} can be used. Solving the problem for multiple convex polygonal obstacles is suggested as future work here.
+
+\section{Further optimization on TSP tour of a MULE}
+
+We can apply the work of \cite{conHull} here. First, we have to cover the sensor field with discs of radius \emph{half} the range of the sensors. This way, the MULE need not travel to the center of a location node disc for data collection, and the location node can be treated as a communication area \cite{conHull}. Then after applying their algorithm on our set of location nodes, we can reduce our TSP time by 15-20\%.
+
+\singlespacing
