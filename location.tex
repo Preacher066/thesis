@@ -14,7 +14,7 @@ Our path selection heuristic uses \emph{location nodes}. Since our MULEs need to
 
 \section{Geometric Disc Covering and Location Nodes}
 
-In the interest of collecting data from sensors in one hop, we propose to cover the sensor field with circular discs of radius equal to the range of the sensors. The centers of these discs are going to be locations where MULEs will 
+In the interest of collecting data from sensors in one hop, we propose to cover the sensor field with circular discs of radius equal to the range of the sensors. The centers of these discs are going to be locations where MULEs will kljcvn;bxzjcnvb;
 There are many \cite{gmdc} \cite{dudc} \cite{shifting} geometric disc covering algorithms and PTASs, any one of which can be used here. We, however used a greedy heuristic (GRD) for the implementation. Following are some heuristics that we tested on sample fields (in each of the following heuristics, assume that we have a set of discs $D$ such that any disc cover solution $D'$ is equivalent to a subset of $D$. By "picking a disc" we mean picking a disc from $D$.):
 \begin{description}
 \item[JGRD] Straightforward set cover heuristic \cite{jgreedy}. Pick the disc which covers the maximum number of uncovered sensors.
