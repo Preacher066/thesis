@@ -13,6 +13,8 @@ In this thesis we will focus only on Path selection of the MULEs.
 Our path selection heuristic uses \emph{location nodes}. Since our MULEs need to communicate to  the sensors from 1-hop distance, we cover the sensor field with discs of radius equal to the range of the sensors. Ofcourse, we are approximating the communicable region of a sensor to a circular disc, and also assuming that the range of the MULE is greater than that of any sensor (we assume all the sensors are identical in communication range). The centres of these discs are called \emph{location nodes}.
 
 \section{Geometric Disc Covering and Location Nodes}
+
+In the interest of collecting data from sensors in one hop, we propose to cover the sensor field with circular discs of radius equal to the range of the sensors. The centers of these discs are going to be locations where MULEs will 
 There are many \cite{gmdc} \cite{dudc} \cite{shifting} geometric disc covering algorithms and PTASs, any one of which can be used here. We, however used a greedy heuristic (GRD) for the implementation. Following are some heuristics that we tested on sample fields (in each of the following heuristics, assume that we have a set of discs $D$ such that any disc cover solution $D'$ is equivalent to a subset of $D$. By "picking a disc" we mean picking a disc from $D$.):
 \begin{description}
 \item[JGRD] Straightforward set cover heuristic \cite{jgreedy}. Pick the disc which covers the maximum number of uncovered sensors.
