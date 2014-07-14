@@ -4,9 +4,14 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{setspace}
 \usepackage{nameref}
+\usepackage{amsthm}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \renewcommand*{\familydefault}{\sfdefault}
 \graphicspath{ {graphs/} }
+
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{.}{.5em}{#1 \thmnote{(#3)}}
+\theoremstyle{named}
+\newtheorem*{definition}{Definition}
 
 \begin{document}
 
