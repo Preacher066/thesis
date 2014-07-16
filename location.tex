@@ -31,7 +31,25 @@ A set $S$ of disc centres such that they cover all the points in the field $F$ i
 
 \item[GRD] (We are not aware of any other work using this heuristic) Let the list of all sensor positions in the field $F$ be $L$. First sort $L$ according to their (x,y) position co-ordinates (first by x co-ordinate and then by y co-ordinate). Starting from the first sensor $p$ in the list, pick the disc which covers maximum number of uncovered sensors and covers $p$ too. To do this, compute all the crosses in $C$ which involve $p$. Place a disc of radius $R$ at each of the crosses, and choose the cross whose disc covers the most number of points. Choose the next uncovered sensor in $L$ and repeat the covering procedure, until all sensors are covered.
 
-\item[SHFT] The shifting strategy from \cite{shifting}.
+\item[SHFT] The shifting strategy from \cite{shifting}. This algorithm takes two input parameters: $l$ (shifting parameter) and $D$ (diameter of discs to be used for covering). Let the field be a square of length $W$. First we divide the field into vertical strips of width $l \times D$, as shown in figure \ref{fig:origStrip}. We do disc cover on these vertical strips (explained later) individually (treating them as separate fields. The union of the solutions of all the vertical strips is clearly a solution to the problem. This solution is assigned to $current\_solution$. Now, the whole partition of strips is shifted horizontally, away from the origin, by the amount of $D$ (as shown in figure \ref{fig:shiftStrip}). Again, all the strips are covered with discs (to be explained later how), and the union of the solutions of these shifted vertical strips another solution, assigned to $new\_solution$. If the size of $new\_solution$(the number of discs in the solution) is less than the size of $current\_solution$, the current solution now becomes $new\_solution$. We continue shifting the partition and measuring the solutions thus generated $l-1$ times.
+
+To cover a strip of width $w$, we again apply the shifting strategy. We divide the strip into squares of side $w$ (and maybe a remainder rectangle, in case $W$ leaves a remainder upon dividing with $w$). To cover this sqaure (of size $w \times w$) with discs of diameter D, we use the strategy OPT described above. The shifting of this partition is done by the amount $D$ just like in the original field.
+
+\begin{figure}[H]
+
+\includegraphics[width=15cm]{figures/beforeShift.png}
+\caption{Original division of the field into vertical strips. $l$ is 3 here.} \label{fig:origStrip}
+
+\end{figure}
+
+\begin{figure}[H]
+
+\includegraphics[width=15cm]{figures/afterShift.png}
+
+\caption{After the shift right by the amount $D$}\label{fig:shiftStrip}
+
+\end{figure}
+
 \item[SEL] For any sensor $s$, let $L$ be the set of discs covering it. Pick the disc which covers the least number of sensors.
 \item[RND] Randomly pick discs until all the sensors are covered. Just for sake of comparision with other heuristics.
 \end{description}
