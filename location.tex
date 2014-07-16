@@ -30,6 +30,14 @@ A set $S$ of disc centres such that they cover all the points in the field $F$ i
 
 \item[OPT] This is the optimum solution algorithm, which uses brute-force to search for the minimum set cover to find the optimum solution. First we make a table of the information regarding which cross (refer \ref{subsec:prelim}) covers which of the sensors. These crosses act like the subsets of the set of all sensors, containing the sensors they cover. We then find the minimum set cover using brute-force. Needless to say, the running time of this algorithm blows up very fast.
 
+\item[HEX] First we tile the field with hexagons of sides equal to the radius of the discs to be used (as shown in figure \ref{fig:hex}). A sensor is said to be covered by a hexagon, if it is closer to its center than the center of any other hexagon.
+\begin{center}
+\begin{figure}[H]
+\includegraphics[width=12cm]{figures/hex.png}
+\caption{Hexagonal tiling}\label{fig:hex}
+\end{figure}
+\end{center}
+
 \item[JGRD] This is originally a set cover heuristic \cite{jgreedy}. Consider the set $P$ as the target set to be achieved from the union of smaller subsets, and the discs centered at the crosses in $C$ represent the subsets of points covered by them. Our problem of MGDC then becomes a set cover problem. \cite{jgreedy} gives a greedy heuristic for this.
 
 \item[GRD] (We are not aware of any other work using this heuristic) Let the list of all sensor positions in the field $F$ be $L$. First sort $L$ according to their (x,y) position co-ordinates (first by x co-ordinate and then by y co-ordinate). Starting from the first sensor $p$ in the list, pick the disc which covers maximum number of uncovered sensors and covers $p$ too. To do this, compute all the crosses in $C$ which involve $p$. Place a disc of radius $R$ at each of the crosses, and choose the cross whose disc covers the most number of points. Choose the next uncovered sensor in $L$ and repeat the covering procedure, until all sensors are covered.
