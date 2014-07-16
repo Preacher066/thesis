@@ -15,7 +15,7 @@ In this thesis we will focus only on Path selection of the MULEs.
 
 In the interest of collecting data from sensors in one hop, we propose to cover the sensor field with circular discs of radius equal to the range of the sensors. The centers of these discs are going to be locations where MULEs will pause to collect data from the sensors. We call these positions \emph{location nodes} for convinience. Our path selection heuristic uses location nodes as vertices of a graph embedded on the 2D plane. Ofcourse, we are approximating the communicable region of a sensor to a circular disc, and also assuming that the range of the MULE is greater than that of any sensor (we assume all the sensors are identical in communication range). The centres of these discs are called \emph{location nodes}.
 
-There are many \cite{} \cite{} geometric disc covering heuristics and PTASs, any one of which can be used here. But since PTAS's having high running time \cite{} and hard to implement, we used heuristics for the implementation. Following are some heuristics that we tested on sample fields.
+There are many geometric disc covering heuristics and PTASs \cite{} already known, any one of which can be used here. But since PTAS's having high running time \cite{} and hard to implement, we used heuristics for the implementation. Following are some heuristics that we tested on sample fields.
 
 \subsection{Preliminaries}
 \label{subsec:prelim}
@@ -30,7 +30,7 @@ A set $S$ of disc centres such that they cover all the points in the field $F$ i
 
 \item[OPT] This is the optimum solution algorithm, which uses brute-force to search for the minimum set cover to find the optimum solution. First we make a table of the information regarding which cross (refer \ref{subsec:prelim}) covers which of the sensors. These crosses act like the subsets of the set of all sensors, containing the sensors they cover. We then find the minimum set cover using brute-force. Needless to say, the running time of this algorithm blows up very fast.
 
-\item[HEX] First we tile the field with hexagons of sides equal to the radius of the discs to be used (as shown in figure \ref{fig:hex}). A sensor is said to be covered by a hexagon, if it is closer to its center than the center of any other hexagon.
+\item[HEX] In this heuristic \cite{hex}, first we tile the field with hexagons of sides equal to the radius of the discs to be used (as shown in figure \ref{fig:hex}). A sensor is said to be covered by a hexagon, if it is closer to its center than the center of any other hexagon.
 \begin{center}
 \begin{figure}[H]
 \includegraphics[width=12cm]{figures/hex.png}
