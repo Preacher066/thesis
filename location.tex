@@ -21,7 +21,10 @@ There are two kinds of geometric disc cover problems studied:
 \item[Geometric minimum disk cover (GMDC)] In this problem, a field of nodes is given, and the aim is to cover all the nodes with minimum number of discs (of given radius) possible. The centers of the discs can lie anywhere on the field.
 \item[Geometric discreet unit disc cover (GDUDC)] In this problem, in addition to a field of nodes, a set of points $C$ is also given. The aim is to determine the smallest subset $C'$ of $C$, such that the discs placed at the points in $C'$ cover all the nodes in the field.
 \end{description}
-There are many geometric disc covering heuristics and PTASs \cite{} already known, any one of which can be used here. But since PTAS's having high running time \cite{} and hard to implement, we used heuristics for the implementation. Following are some heuristics that we tested on sample fields.
+
+We use the problem GMDC here. Compared to GMDC, GDUDC is a much better studied problem. Therefore, we initially planned to get an intermediate solution of GMDC through some heuristic/PTAS, then apply GDUDC problem for a better solution. We tried and failed to implement one solution \cite{carmi} for GDUDC. Therefore, we depend completely upon the following heuristics for disc covering.
+
+There are many geometric disc covering heuristics and PTASs \cite{} for GMDC already known, any one of which can be used here. But since PTAS's having high running time \cite{} and hard to implement, we used heuristics for the implementation. Following are some heuristics that we tested on sample fields.
 
 \subsection{Preliminaries}
 \label{subsec:prelim}
