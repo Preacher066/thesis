@@ -177,6 +177,15 @@ The edge records still left in the Heap, after completion of one full iteration 
 		\State tempSet.insert(curr);
 		\State $cleanTour(tempSet)$
 		\State $cycleWeight, currTour \gets TSPCircuit(tempSet)$ 
+
+\algstore{pag1}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\begin{algorithmic}
+\algrestore{pag1}
+
 		\ForAll{ sensor $s$ in $currTour$}
 			$cycleWeight \gets cycleWeight + ASP*w[s]$
 		\EndFor
@@ -217,9 +226,7 @@ The edge records still left in the Heap, after completion of one full iteration 
 
 \pagebreak
 
-\subsection{Scalability restriction and Minimum Latency}
-Consider the extreme case of low latency requirement, when 1 MULE is assigned to each edge of the Steiner tree. This must be the smallest latency supportable with this heuristic. Lets call this latency $L_{min}$. Let $w_{max}$ be the larget weight among the wieghts of the edges of the Steiner tree. Then, $L_{min} \ge w_{max}$.
-For any edge $(p,q)$ in the current Steiner tree, suppose upon recording the dfs sequence from the base station in the Steiner tree, $p$ appears before $q$; then $p$ is said to be near vertex, and $q$ is said to be the farther vertex. Then, for the case when $t_{LS}$ is not ignored, let $(i,j)$ be the maximum weighted edge with weight $w_{max}$. Also, let j be the farther 
-vertex. Then, $L_{min} \ge w_{max}+t_{LS}[j]$.
-
-Consider a single MULE collecting and aggregating all the data from all the sensor networks, and uploading it to the base station. For any sensor distribution, let the time taken by the MULE to upload the data be $T_{MBS}$. Now we will account for $t_{MBS}$. Consider the subtour containing the base station. The MULE assigned to this subtour is responsible for indirectly collecting and aggregating the data from all other subtours and delivering it to the base station. For this, it sends/recieves from other MULEs and the base station for total of $2 \times T_{MBS}$ units of time (simplistic assumption, neglecting time spent in P2P protocol between MULEs). Clearly, for any other subtour, its assigned MULE can not have a $t_{MBS}$ greater than $2 \times T_{MBS}$. So, if $T_{MBS}$ is significant contribution to total time taken by a MULE to cover its subtour, $L_{min} \ge w_{max}+t_{LS}[j]+2 \times T_{MBS}$.
+%\subsection{Scalability restriction and Minimum Latency}
+%Consider the extreme case of low latency requirement, when 1 MULE is assigned to each edge of the Steiner tree. This must %be the smallest latency supportable with this heuristic. Lets call this latency $L_{min}$. Let$(i,j)$ be the maximum weighted %edge of the Steiner tree with weight $w_{max}$. Now, suppose for any edge $(p,q)$ in the current Steiner tree, upon %recording the dfs (depth first search) sequence from the base station in the Steiner tree, $p$ appears before $q$; then define %$p$ to be the "near node", and $q$ to be the "far node". Then, in the case of the edge $(i,j)$, say, j being the far node, %$L_{min} \ge w_{max}+t_{LS}[j]$.
+%
+%Consider a single MULE collecting and aggregating all the data from all the sensor networks, and uploading it to the base %station. For any sensor distribution, let the time taken by the MULE to upload the data be $T_{MBS}$. Now we will account %for $t_{MBS}$. Consider the subtour containing the base station. The MULE assigned to this subtour is responsible for %indirectly collecting and aggregating the data from all other subtours and delivering it to the base station. For this, it %sends/recieves from other MULEs and the base station for total of $2 \times T_{MBS}$ units of time (simplistic assumption, %neglecting time spent in P2P protocol between MULEs). Clearly, for any other subtour, its assigned MULE can not have a %$t_{MBS}$ greater than $2 \times T_{MBS}$. So, if $T_{MBS}$ is significant contribution to total time taken by a MULE to %cover its subtour, $L_{min} \ge w_{max}+t_{LS}[j]+2 \times T_{MBS}$.
