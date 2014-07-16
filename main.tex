@@ -1,10 +1,11 @@
-\documentclass[11pt,a4paper]{book}
+\documentclass[11pt,a4paper]{report}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage[pdftex]{graphicx}
 \usepackage{setspace}
 \usepackage{nameref}
 \usepackage{amsthm}
+\usepackage[a4paper,left=35mm,right=25mm,top=25mm,bottom=25mm]{geometry}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \renewcommand*{\familydefault}{\sfdefault}
 \graphicspath{ {graphs/} }
@@ -12,6 +13,8 @@
 \newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{.}{.5em}{#1 \thmnote{(#3)}}
 \theoremstyle{named}
 \newtheorem*{definition}{Definition}
+
+\pagestyle{headings}
 
 \begin{document}
 

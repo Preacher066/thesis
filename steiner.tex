@@ -2,48 +2,27 @@
 
 %\section{Subproblems}
 
-Our approach to a better heuristics
-is driven by the concept of location graph and using the same for
-construction of low latency tours of the MULEs in data collection phase. 
-Two critical subproblems encountered in this context are: 
+Our approach to a better heuristic is driven by the concept of location graph and using the same for construction of low latency tours of the MULEs in data collection phase. The two critical subproblems encountered in this context are: 
 (i) Euclidean Minimum Stiener Tree (EMST), and (ii)  Euclidean Travelling Saleman Problem (ETSP). Both the problems have already been introduced
-in chapter~\ref{chapter2}. We will briefly restate these here for
-sake of completeness and convenience in description of our heuristics.
+in chapter 2. We will briefly restate these here for
+sake of completeness and convenience in description of our heuristic.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{definition}[Euclidean Travelling Salesman Problem]
 Given a set of n 2D points in a plane find a minimum cost tour of all
 the points, visiting every point exactly once.
 \end{definition}
-We use Christofides algorithm~\cite{christofides} as the approximation 
-heuristic for computing TSP route of a set of points.
-
-{\bf Comment:} I believe these subproblem are independent concepts. 
-So, these should be introduced in chapter 2 little more elaborately
-with adequate nontrivial examples.
-
+We use Christofides algorithm~\cite{christofides} as the approximation heuristic for computing TSP route of a set of points.
 
 \begin{definition}[Euclidean minimum Steiner Tree problem]
 Given a set $P$ of points in a 2-D plane as input, the output is a network of line segements connecting all of the points in $S$, with the smallest total (Euclidean) length.
 \end{definition}
-The line segments making the Steiner Tree need just be incident on the 
-points in $S$. This implies that the algorithm is free to use additional 
-points from the plane, if necessary, to produce the smallest total length 
-network. The additional points are called {\em Steiner Points}.
+The line segments making the Steiner Tree need just be incident on the points in $S$. This implies that the algorithm is free to use additional points from the plane, if necessary, to produce the smallest total length network. The additional points are called {\em Steiner Points}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The location nodes (the nodes in location graph) computed earlier, form 
-the set $P$, and the EMST is generated using the set $P$.
-The pseudo code for the heuristic
-which appear later in section~\ref{sec:heuristicAlgo} this chapter use 
-the EMST as input. The choice of EMST as data structure over MST is 
-guided by the fact that the goal of our heuristic to divide the set of location nodes into multiple sets with approximately the same TSP time units.
-The TSP time unit is the time taken by a MULE to visit all points on EMST.
-the cost of ETSP on a set is atmost twice the cost of the EMST on it. Therefore, it should be reasonable to use the Steiner tree traversal as a guide for partitioning. Furthermore, in the case where the field also includes obstacles, Steiner trees lend themselves naturally to cover all the points due the properties of Steiner points~\cite{oaest99} as explained in 
-section~\ref{sec:steinerPoint} of chatper~2. Though we plan not to cover the obstacle avoidance case, we briefly sketch the underlying ideas in 
-Chapter~\ref{chap:concl}.
-For computing Steiner tress, we use the exact solution finder software 
-GeoSteiner~\cite{geosteiner1}~\cite{geosteiner2}~\cite{geosteiner3}. 
+The location nodes (the nodes in location graph) computed earlier, form the set $P$, and the EMST is generated using the set $P$, and is called the location graph $T$. The pseudo code for the heuristic which appear later in section ~\ref{sec:heuristicAlgo} uses the EMST as input. The choice of EMST as data structure over MST is guided by the fact that the weight (weight here means total of lengths of all the edges in a graph) of EMST is always atmost the weight of the MST, and we use the weight of a tree as an approximation of the weight of the TSP tour of its vertices.
+
+The TSP time unit is the time taken by a MULE to visit all points on EMST. The cost of ETSP on a set is atmost twice the cost of the EMST on it. Therefore, it should be reasonable to use the Steiner tree traversal as a guide for partitioning. Furthermore, in the case where the field also includes obstacles, Steiner trees lend themselves naturally to cover all the points due the properties of Steiner points~\cite{oaest99} as explained in section~\ref{sec:steinerPoint} of chapter~2. Though we plan not to cover the obstacle avoidance case, we briefly sketch the underlying ideas in Chapter~\ref{chap:concl}. For computing Steiner tress, we use the exact solution finder software GeoSteiner~\cite{geosteiner1}~\cite{geosteiner2}~\cite{geosteiner3}. 
 
 {\bf Comment:} Here you could show a Steiner tree generated by
 GeoSteiner. 
@@ -61,19 +40,16 @@ extra Steiner points such that following conditions are satisfied.
 \end{itemize}
 
 It assumed that the time a MULE spends in a network while collecting data
-consists of three main components: (i) travelling from one location node to another $t_{TSP}$, (ii) talking to sensors belonging to a location node $t_{LS}$, (iii) talking to other MULEs/Base station $t_{MBS}$. Obviously, the 
-contribution due to last two components of a MULE's operation remains
-the same for in any subset of location nodes assigned to the same MULE. 
-Furthermore, both $t_{LS}$ and $t_{MBS}$ are small compared to $t_{TSP}$. 
+consists of three main components: (i) travelling from one location node to another $t_{TSP}$ (ii) Talking to sensors belonging to a location node $t_{LS}$, called MULE's pause time, at a location node (iii) Talking to other MULEs/Base station $t_{MBS}$.
 
-We first describe the algorithm for a simplified heuristic that ignores the last two components of a MULE's, namely, $t_{LS}$ and $t_{MBS}$. Subsequently, we modify the above algorithm to take into account the second component of time $t_{LS}$. We assume that MULE to MULE data transfer times are shorterdue to two reasons, namely, (i) MULEs may use data aggregation while sending data to fellow a MULE or BS, and (ii) MULEs being relative expensive and more robust than sensor node, typically have higher bandwidth for inter MULE data transfer. The component $t_{LS}$ for each location node can be given as an input, or observed before running the heuristic, by simply sending one MULE on a tour of all the location nodes in the field to measure and record such times beforehand.
+We assume that MULE to MULE data transfer times are shorterdue to two reasons, namely, (i) MULEs may use data aggregation while sending data to fellow a MULE or BS, and (ii) MULEs being relative expensive and more robust than sensor node, typically have higher bandwidth for inter MULE data transfer. This is the reason, we ignore the contribution of $t_{MBS}$. The component $t_{LS}$ for each location node can be given as an input (observed before running the heuristic, by simply sending one MULE on a tour of all the location nodes in the field to measure and record such times beforehand), or computed using sensor parameters, such as: Sensor data throughput ($SDT$, effective data rate, after taking into account the overhead introduced due to protocol headers) and Sensor data sampling rate ($SSR$, data sampling rate of the sensor, the speed of data acquisition of the sensor from its environment in bytes/sec).
 
 
-\subsection{Heuristics}
+\subsection{Heuristic}
 
 The overall strategy is to create an EMST of the location nodes and then divide this tree into subgraphs, using the tree edges as the guide. Each subgraph's set of nodes will be covered by one MULE (henceforth, this set of nodes will be called a subtour). The term "weight" is equivalent to "time interval" in this algorithm, and is measured in seconds. An edge of the tree is said to have weight equal to its length divided by the speed of the MULE (time taken by the MULE to cover that edge). The weight of a location node is equal to the time a MULE has to wait there for data collection (called pause time). It depends on the latency bound and the number of sensor nodes covered by that location node. Steiner points have zero weight. The weight of the TSP tour of a set of nodes is equal to the smallest amount of time it tales for a travelling salesman to visit each node exactly once.
 
-Consider any euclidean spanning tree of a set of 2D points in a plane (none of the points have weights). Clearly, one way to visit all points would be to start from the root, and visit the nodes in the depth first search order, always travelling along the edges. This would take time equal to twise the weight of the tree (each edge travelled twice, once for going from parent to child, and once for coming back to the parent from the child). Thus, the optimal travelling salesman tour must be bounded by twice the weight of the tree. 
+Consider any euclidean spanning tree of a set of 2D points in a plane (none of the points have any weight). Clearly, one way to visit all points would be to start from the root, and visit the nodes in the depth first search order, always travelling along the edges. This would take time equal to twise the weight of the tree (each edge travelled twice, once for going from parent to child, and once for coming back to the parent from the child). Thus, the optimal travelling salesman tour must be bounded by twice the weight of the tree. 
 
 Now consider the case, when the points have weights too (i.e. the travelling salesman has to wait at the point for a time equal to its weight). Then, the TSP approximation needs to be modified just by adding the total weight of all points in the tree.
 
@@ -103,6 +79,9 @@ In the beginning of the second stage, although we are sure that the TSP tour of 
 
 The edge records still left in the Heap, after completion of one full iteration of the second inner while loop, form the boundary of the nodes in $currSet$. These nodes are pushed in the $boundary$, from where the next $root$ for the next MULE's subtour computation is chosen.% point set to cover, 
 
+\subsubsection{Pseudocode}
+\label{sec:heuristicAlgo}
+
 \begin{algorithm}
 \caption{Dividing the set nodes with weights of a given Steiner tree into subsets of bounded TSP time}\label{euclid}
 \begin{algorithmic}
@@ -114,6 +93,9 @@ The edge records still left in the Heap, after completion of one full iteration 
 \State $SDT \gets$ sensor data throughput
 \State $SSR \gets$ sensor data sampling rate
 \State $ASP \gets$ $\frac{(L\times SSR)}{SDT}$ (average sensor pause time for one sensor)
+\State $queue$ boundary.push($root$) 
+\State $bool$ $visited[N]$
+\State $vertex$ curr 
 
 \algstore{pag}
 \end{algorithmic}
@@ -123,9 +105,6 @@ The edge records still left in the Heap, after completion of one full iteration 
 \begin{algorithmic}
 \algrestore{pag}
 
-\State $queue$ boundary.push($root$) 
-\State $bool$ $visited[N]$
-\State $vertex$ curr 
 \For{$i \gets 1,N$}
 	\State $visited[i] \gets false$ 
 \EndFor
