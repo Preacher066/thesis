@@ -71,24 +71,40 @@ We first describe the algorithm for a simplified heuristic that ignores the last
 
 \subsection{Heuristics}
 
-The overall strategy is to create an EMST of the location nodes and then divide this tree into subgraphs, using the tree edges as the guide. Each subgraph's set of nodes will be covered by one MULE (henceforth, this set of nodes will be called a subtour). An edge of the tree is said to have weight equal to its length divided by the speed of the MULE (time taken by the MULE to cover that edge). The weight of a location node is equal to the time a MULE has to wait there for data collection (called pause time). It depends on the latency bound and the number of sensor nodes covered by that location node. Steiner points have zero weight.
+The overall strategy is to create an EMST of the location nodes and then divide this tree into subgraphs, using the tree edges as the guide. Each subgraph's set of nodes will be covered by one MULE (henceforth, this set of nodes will be called a subtour). The term "weight" is equivalent to "time interval" in this algorithm, and is measured in seconds. An edge of the tree is said to have weight equal to its length divided by the speed of the MULE (time taken by the MULE to cover that edge). The weight of a location node is equal to the time a MULE has to wait there for data collection (called pause time). It depends on the latency bound and the number of sensor nodes covered by that location node. Steiner points have zero weight. The weight of the TSP tour of a set of nodes is equal to the smallest amount of time it tales for a travelling salesman to visit each node exactly once.
 
-Consider any euclidean spanning tree of a set of 2D points in a plane (none of the points have weights). Clearly, one way to visit all points would be to start from the root, and visit the nodes in the depth first search order, always travelling along the edges. This would take time equal to twise the weight of the tree (each edge travelled twice, once for going from parent to child, and once for coming back to the parent from the child). Thus, the optimal travelling salesman tour must be bound by twice the weight of the tree.
+Consider any euclidean spanning tree of a set of 2D points in a plane (none of the points have weights). Clearly, one way to visit all points would be to start from the root, and visit the nodes in the depth first search order, always travelling along the edges. This would take time equal to twise the weight of the tree (each edge travelled twice, once for going from parent to child, and once for coming back to the parent from the child). Thus, the optimal travelling salesman tour must be bounded by twice the weight of the tree. 
 
-We now describe the algorithm that will not take in to account $t_{LS}$,and will be used to generate simulation results. Given any tree $T$, we start from the given root node $root$. $root$ then becomes the current node $curr$. Then following steps of Prim's algorithm~\cite{Prim}, we first mark $curr$ as visited, then we insert all the incident edges of the current node with unvisited nodes to the min-heap $edgeHeap$. Computation of a tour for a MULE consists of two stages coded in two inner while loops.
+Now consider the case, when the points have weights too (i.e. the travelling salesman has to wait at the point for a time equal to its weight). Then, the TSP approximation needs to be modified just by adding the total weight of all points in the tree.
 
-In the first stage, represented by the first inner while loop, every time we an edge $(v1,v2)$ is selected and delete from $edgeHeap$, all the edges incident to $v1$ which have unvisited end nodes are inserted into the heap. Then, $v1$ is inserted to $currSet$. We keep popping edges from $edgeHeap$ until either $edgeHeap$ becomes empty or, adding any more edges to $currSet$ from $edgeHeap$ leads to total weight exceeding $\frac{L}{hApprox}$. Note that the second condition ensures that the TSP weight of our points set $currSet$ does not exceed $L$. The bound for $L_{hApprox}$ depends completely upon the heuristic used for TSP problem, which is approximation ratio of the heuristic used for TSP, $\times$ 2 ({\bf comment: what is it?}).
+Given any tree $T$, we start from the given root node $root$. $root$ then becomes the current node $curr$. Then following steps of Prim's algorithm~\cite{Prim}, we first mark $curr$ as visited, then we insert all the incident edges of the current node with unvisited nodes to the min-heap $edgeHeap$. Computation of a tour for a MULE consists of two stages coded in two inner while loops.
 
-Any Steiner point whose all adjacent nodes belong to same subtour will useless. Because, such a Steiner point neither serves as a connecting node between different subtours, nor represents a location node. So, such a Steiner point should be eliminated form the subtour. Function $cleanTour$ is used precisely for this purpose. {\bf comments: what does the next sentence supposed to mean?} Every time we test the inclusion of a new edge in the second stage.
 
-Actual calculation of TSP of the selected node set is performed in the second stage while  %we calculate the actual TSP of our point set and 
-continuing popping of edges from $edgeHeap$ and adding these to $currSet$. Before adding a node to $currSet$, we test whether its inclusion will make $currT$ exceed $L$ or not. If yes, then $currSet$ is the final node set for this MULE. Otherwise, the second inner while loop repeats. %until hen our $currSet$ for this MULE is final. 
-The edge records still left in the Heap, after completion of one full iteration of the second inner while loop, form the boundary of the nodes in $currSet$. We call this set as $i$th after completion of $i$th iteration of the loop. %  with respect to the Steiner tree, 
-These nodes are pushed in the $boundary$, from where the next $root$ for the next MULE's is chosen.% point set to cover, 
 
+{\bf Note:} Since we use a 3/2 approximation algorithm \cite{christofides} for computing the TSP tour of a subtour, the bound that we will use in the implementation will be actually $3\times $ weight of the tree. In general, if an $x$ approximation algorithm for euclidean TSP is used, then the bound for TSP weight used should be $2\times x \times$ weight of the tree.
+
+Now we describe the algorithm. Let $boundary$ be a set of nodes of the steiner tree, initially containing any one node from the Steiner tree. The algorithm picks any one node from the $boundary$ and calls it $root$. The algorithm then computes a connected subgraph of the Steiner tree (containing that root node) with bounded TSP time. The nodes of this subgraph form a subtour, covered by one MULE. The boundary nodes of a subgraph are those nodes of the steiner tree (regardless of whether they are location nodes or Steiner points), which belong to the subgraph, and do not have all their adjacent nodes in the subgraph. All the boundary nodes from this subgraph are inserted into $boundary$, and the algorithm is called again. This continues until all the nodes are part of exactly one subtour.
+
+\subsubsection{Preliminaries}
+
+Some data structures and inputs used in the pseudocode are as follows. $T$ is the Steiner tree of the location nodes, given as input to the algorithm. $ASP$ is the average sensor pause time, calculated using $L$ (latency bound), $SDT$ (sensor data throughput) and $SSR$ (sensor data sampling rate). These three are given as input to the algorithm. The map $w$, taken as input by the algorithm, is the map from the nodes in the Steiner tree T to the number of sensors they cover. Each location nodes will have a non zero entry in the map $w$, whereas all the Steiner points will have zero entry in the map. For instance, for a node $v$, $w[v]$ is the number of sensors covered by $v$. $edgeHeap$ is a min-heap of the pairs $(tWeight,edge)$, where $edge$ is a pair of nodes $(v_1,v_2)$, and $tWeight = 3 \times weight\_of\_edge(v_1,v_2) + ASP \times w[v_1]$. The ordering in the min-heap is according to its first argument $tWeight$. To push an edge into the heap $edgeHeap$ means to calculate the $tWeight$ of the edge, then inserting the pair $(tWeight,edge)$ in the heap.
+
+\subsubsection{Computation of subtours}
+
+Computation of subtours begins from the picking of a node form the set $boundary$. This node will be called $root$ for this subtour. Before the computation of the subtour, we mark $root$ as visited, and for all nodes $v$ adjacent to $root$, we push the edges $(v,root)$ into $edgeHeap$.
+
+The subtour is computed in two stages. In the first stage, represented by the first inner while loop, $currSet$ contains the nodes currently included in the subtour being computed. $currT$ is the upper bound of the TSP tour of the nodes in $currSet$; it is updated every time we insert a node into $currSet$. Before popping a pair $(tWeight,edge)$ from $edgeHeap$, we first check for the condition, whether $currT+tWeight$ is greater than $L$; if it is, first stage ends here, and we break from the while loop. Otherwise, we pop the pair $(tWeight,(v1,v2))$ from $edgeHeap$, all the edges incident to $v1$ which have unvisited end nodes are inserted into the heap, $v1$ is inserted to $currSet$, and $currT+=tWeight$.
+
+We keep popping edges from $edgeHeap$ until either $edgeHeap$ becomes empty or, adding any more nodes to $currSet$, leads to $currT$, our current estimate of the weight of the TSP tour of $currSet$, becoming greater than $L$, our given latency bound.  By this time, we are sure that the TSP tour of the nodes in $currSet$ will not exceed $L$.
+
+Observe that any Steiner point whose all adjacent nodes belong to same subtour is useless. Because, such a Steiner point neither serves as a connecting node between different subtours, nor represents a location node. So, such a Steiner point should be eliminated form the subtour. The function $cleanTour$ is used on $currT$ for this purpose, and the first stage ends here.
+
+In the beginning of the second stage, although we are sure that the TSP tour of the nodes in $currSet$ will not exceed $L$, but the actual weight of the TSP tour of the nodes in $currSet$ might be low enough to add still more nodes into $currSet$. For testing whether this is possible or not, first we compute the actual weight of the TSP tour of $currSet$. Then, before adding a node to $currSet$, we test whether its inclusion will make $currT$ exceed $L$ or not. If yes, then $currSet$ is the final subtour for this MULE. Otherwise, the second stage repeats. %until hen our $currSet$ for this MULE is final. 
+
+The edge records still left in the Heap, after completion of one full iteration of the second inner while loop, form the boundary of the nodes in $currSet$. These nodes are pushed in the $boundary$, from where the next $root$ for the next MULE's subtour computation is chosen.% point set to cover, 
 
 \begin{algorithm}
-\caption{Dividing the set nodes of a given Steiner tree into subsets of bounded TSP time}\label{euclid}
+\caption{Dividing the set nodes with weights of a given Steiner tree into subsets of bounded TSP time}\label{euclid}
 \begin{algorithmic}
 \Function{greedySteiner}{A Steiner tree $T$ of location in a plane, An array $w$ of the number of sensors under a location node, Starting vertex $root$, desired upper bound on latency $L$}\Comment{this function returns S: Set of tours, each with touring time $\le$ L}
 \State Set  $S$
@@ -98,12 +114,22 @@ These nodes are pushed in the $boundary$, from where the next $root$ for the nex
 \State $SDT \gets$ sensor data throughput
 \State $SSR \gets$ sensor data sampling rate
 \State $ASP \gets$ $\frac{(L\times SSR)}{SDT}$ (average sensor pause time for one sensor)
+
+\algstore{pag}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\begin{algorithmic}
+\algrestore{pag}
+
 \State $queue$ boundary.push($root$) 
 \State $bool$ $visited[N]$
 \State $vertex$ curr 
 \For{$i \gets 1,N$}
 	\State $visited[i] \gets false$ 
 \EndFor
+
 \While{1}
 	\If{boundary.empty()}
 		\State break
@@ -138,13 +164,6 @@ These nodes are pushed in the $boundary$, from where the next $root$ for the nex
 	\EndWhile
 
 	\State $cleanTour(currSet)$
-\algstore{pag}
-\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}
-\begin{algorithmic}
-\algrestore{pag}
 	
 	\State Tour $currTour$ 
 	\State $tempSet \gets currSet$ 
@@ -197,7 +216,6 @@ These nodes are pushed in the $boundary$, from where the next $root$ for the nex
 \end{algorithm}
 
 \pagebreak
-
 
 \subsection{Scalability restriction and Minimum Latency}
 Consider the extreme case of low latency requirement, when 1 MULE is assigned to each edge of the Steiner tree. This must be the smallest latency supportable with this heuristic. Lets call this latency $L_{min}$. Let $w_{max}$ be the larget weight among the wieghts of the edges of the Steiner tree. Then, $L_{min} \ge w_{max}$.
