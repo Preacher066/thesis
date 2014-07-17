@@ -16,7 +16,7 @@ In this thesis our focus is only on path selection of the MULEs.
 
 \section{Geometric Disc Covering and Location Nodes}
 
-In the interest of collecting data from sensors in one hop, we propose to cover the sensor field with circular discs of radius equal to the range of the sensors. The centers of these will be locations where MULEs will pause to collect data from the sensors. For convinience in description, we will refer to these positions as \emph{location nodes}. Our path selection heuristic, proposed in Chapter~\ref{chap:}, uses location nodes as the nodes of a graph embedded on the 2D plane. Underlying assumptions in our approach are: (i) communication region of a sensor is approximated to a circular disc, (ii) all sensor have same communication range, and (ii) the range of the MULE is greater than that of any sensor. % (we assume all the sensors are identical in communication range). The centres of these discs are called \emph{location nodes}.
+In the interest of collecting data from sensors in one hop, we propose to cover the sensor field with circular discs of radius equal to the range of the sensors. The centers of these will be locations where MULEs will pause to collect data from the sensors. For convinience in description, we will refer to these positions as \emph{location nodes}. Our path selection heuristic, proposed in Chapter~\ref{chap:steiner}, uses location nodes as the nodes of a graph embedded on the 2D plane. Underlying assumptions in our approach are: (i) communication region of a sensor is approximated to a circular disc, (ii) all sensor have same communication range, and (ii) the range of the MULE is greater than that of any sensor. % (we assume all the sensors are identical in communication range). The centres of these discs are called \emph{location nodes}.
 
 There are two types of geometric disc cover problems:
 
@@ -26,7 +26,7 @@ There are two types of geometric disc cover problems:
 \end{description}
 
 Though GDUDC was much more extensively explored compared to GMDC, we have 
-used GMDC. Initially, we planned to get an intermediate solution of GMDC through some heuristic/PTAS ({\bf Comments: What is PTAS}), then apply techniques for GDUDC problem for a better solution. We tried but failed to implement one solution~\cite{carmi} for GDUDC ({\bf Comments: why did you fail to implement GDUDC}). Therefore, we relied on heuristics for find a disc covering.
+used GMDC. Initially, we planned to get an intermediate solution of GMDC through some heuristic/Approximation Scheme, then apply techniques for GDUDC problem for a better solution. Due to our unclear understanding of the algorithm, however, we tried but failed to implement one solution~\cite{carmi} for GDUDC. Therefore, we relied on heuristics for find a disc covering.
 
 Many heuristics and approximation schemes~\cite{shifting}, \cite{appScheme} have been proposed for GMDC. Any one of these can be possible candidates. We considered four main heuristics referred to as JGRD,GRD,SEL,HEX, and one approximation scheme know as SHFT and carried out experiments for their efficacy in sample fields. 
 
