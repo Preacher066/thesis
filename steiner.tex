@@ -3,14 +3,10 @@
 %\section{Subproblems}
 
 Our approach to a better heuristic is driven by the concept of location graph and using the same for construction of low latency tours of the MULEs in data collection phase. The two critical subproblems encountered in this context are: 
-(i) Euclidean Minimum Stiener Tree (EMST), and (ii)  Euclidean Travelling Saleman Problem (ETSP). Both the problems have already been introduced
-in chapter 2. We will briefly restate these here for
-sake of completeness and convenience in description of our heuristic.
+(i) Euclidean Minimum Stiener Tree (EMST), and (ii)  Euclidean Travelling Saleman Problem (ETSP). The EMST problem has already been introduced in chapter 2. We will briefly restate these here for sake of completeness and convenience in description of our heuristic.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{definition}[Euclidean Travelling Salesman Problem]
-Given a set of n 2D points in a plane find a minimum cost tour of all
-the points, visiting every point exactly once.
+Given a set of n 2D points in a plane find a minimum weight length tour of all the points, visiting every point exactly once.
 \end{definition}
 We use Christofides algorithm~\cite{christofides} as the approximation heuristic for computing TSP route of a set of points.
 
@@ -18,30 +14,10 @@ We use Christofides algorithm~\cite{christofides} as the approximation heuristic
 Given a set $P$ of points in a 2-D plane as input, the output is a network of line segements connecting all of the points in $S$, with the smallest total (Euclidean) length.
 \end{definition}
 The line segments making the Steiner Tree need just be incident on the points in $S$. This implies that the algorithm is free to use additional points from the plane, if necessary, to produce the smallest total length network. The additional points are called {\em Steiner Points}.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The location nodes (the nodes in location graph) computed earlier, form the set $P$, and the EMST is generated using the set $P$, and is called the location graph $T$. The pseudo code for the heuristic which appear later in section ~\ref{sec:heuristicAlgo} uses the EMST as input. The choice of EMST as data structure over MST is guided by the fact that the weight (weight here means total of lengths of all the edges in a graph) of EMST is always atmost the weight of the MST, and we use the weight of a tree as an approximation of the weight of the TSP tour of its vertices.
 
-The TSP time unit is the time taken by a MULE to visit all points on EMST. The cost of ETSP on a set is atmost twice the cost of the EMST on it. Therefore, it should be reasonable to use the Steiner tree traversal as a guide for partitioning. Furthermore, in the case where the field also includes obstacles, Steiner trees lend themselves naturally to cover all the points due the properties of Steiner points~\cite{oaest99} as explained in section~\ref{sec:steinerPoint} of chapter~2. Though we plan not to cover the obstacle avoidance case, we briefly sketch the underlying ideas in Chapter~\ref{chap:concl}. For computing Steiner tress, we use the exact solution finder software GeoSteiner~\cite{geosteiner1}~\cite{geosteiner2}~\cite{geosteiner3}. 
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=6cm]{figures/disc100.png}
-\caption{50m radius disc cover of 100 sensors in 1000x1000 field} \label{fig:disc100}
-\medskip
-\small
-The white dots are sensor positions
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=6cm]{figures/steiner100.png}
-\caption{The Steiner tree of disc centers of figure \ref{fig:disc100}}
-\medskip
-\small
-The black dots are Steiner points and the red dots are disc centers
-\end{figure}
+The TSP time unit is the time taken by a MULE to visit all points on EMST. The cost of ETSP on a set is atmost twice the cost of the EMST on it. Therefore, it should be reasonable to use the Steiner tree traversal as a guide for partitioning. Furthermore, in the case where the field also includes obstacles, Steiner trees lend themselves naturally to cover all the points due the properties of Steiner points~\cite{oaest99} as explained in section~\ref{sec:steinerPoint} of chapter~2. Though we plan not to cover the obstacle avoidance case, we briefly sketch the underlying ideas in Chapter~\ref{chap:concl}. 
 
 
 \section{Path Selection Heuristic}

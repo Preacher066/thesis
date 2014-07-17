@@ -76,9 +76,35 @@ To cover a strip of width $w$, we again apply the shifting strategy. We divide t
 
 \subsection{Results}
 
-The above heuristics and the approximation scheme were tested on a 1000m$\times$1000m field with discs of radius 50m. The number of sensors are increased form 50 to 100 in steps of 10. As we can see, GRD performed the best. Therefore we used of for our implementation.
+The above heuristics and the approximation scheme were tested on a 1000m$\times$1000m field with discs of radius 50m. The number of sensors are increased form 50 to 100 in steps of 10. As we can see, GRD performed the best. Therefore we used GRD of for our implementation.
 
 \begin{figure}[H]
 \includegraphics[width=15cm]{discs}
 \caption{Results of testing above heuristics and the approximation scheme on a 1000m$\times$1000m field}\label{fig:discResults}
+\end{figure}
+
+\section{Euclidean minimum steiner trees}
+\begin{definition}[Euclidean minimum Steiner Tree problem]
+Given a set $P$ of points in a 2-D plane as input, the output is a network of line segements connecting all of the points in $S$, with the smallest total (Euclidean) length.
+\end{definition}
+The line segments making the Steiner Tree need just be incident on the points in $S$. This implies that the algorithm is free to use additional points from the plane, if necessary, to produce the smallest total length network. The additional points are called \emph{Steiner points}
+
+For computing Steiner tress, we use the exact solution finder software GeoSteiner ~\cite{geosteiner1} ~\cite{geosteiner2} ~\cite{geosteiner3}. Following figures show a disc cover of 100 sensors in a 1000m$\times$1000m field with discs of radius 50m, and the Steiner trre of the disc centers thus computed.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=6cm]{figures/disc100.png}
+\caption{50m radius disc cover of 100 sensors in 1000x1000 field} \label{fig:disc100}
+\medskip
+\small
+The white dots are sensor positions
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=6cm]{figures/steiner100.png}
+\caption{The Steiner tree of disc centers of figure \ref{fig:disc100}}
+\medskip
+\small
+The black dots are Steiner points and the red dots are disc centers
 \end{figure}
