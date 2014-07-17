@@ -17,7 +17,7 @@ The line segments making the Steiner Tree need just be incident on the points in
 
 The location nodes (the nodes in location graph) computed earlier, form the set $P$, and the EMST is generated using the set $P$, and is called the location graph $T$. The pseudo code for the heuristic which appear later in section ~\ref{sec:heuristicAlgo} uses the EMST as input. The choice of EMST as data structure over MST is guided by the fact that the weight (weight here means total of lengths of all the edges in a graph) of EMST is always atmost the weight of the MST, and we use the weight of a tree as an approximation of the weight of the TSP tour of its vertices.
 
-The TSP time unit is the time taken by a MULE to visit all points on EMST. The cost of ETSP on a set is atmost twice the cost of the EMST on it. Therefore, it should be reasonable to use the Steiner tree traversal as a guide for partitioning. Furthermore, in the case where the field also includes obstacles, Steiner trees lend themselves naturally to cover all the points due the properties of Steiner points~\cite{oaest99} as explained in section~\ref{sec:steinerPoint} of chapter~2. Though we plan not to cover the obstacle avoidance case, we briefly sketch the underlying ideas in Chapter~\ref{chap:concl}. 
+The TSP time unit is the time taken by a MULE to visit all points on EMST. The cost of ETSP on a set is atmost twice the cost of the EMST on it. Therefore, it should be reasonable to use the Steiner tree traversal as a guide for partitioning. Furthermore, in the case where the field also includes obstacles, Steiner trees lend themselves naturally to cover all the points due the properties of Steiner points~\cite{oaest99} as explained in section~\ref{sec:steinerPoints} of Chapter~\ref{chapter:2}. Though we plan not to cover the obstacle avoidance case, we briefly sketch the underlying ideas in Chapter~\ref{chap:concl}. 
 
 
 \section{Path Selection Heuristic}
@@ -46,7 +46,7 @@ Consider any euclidean spanning tree of a set of 2D points in a plane (none of t
 
 Now consider the case, when the points have weights too (i.e. the travelling salesman has to wait at the point for a time equal to its weight). Then, the TSP approximation needs to be modified just by adding the total weight of all points in the tree.
 
-Given any tree $T$, we start from the given root node $root$. $root$ then becomes the current node $curr$. Then following steps of Prim's algorithm~\cite{Prim}, we first mark $curr$ as visited, then we insert all the incident edges of the current node with unvisited nodes to the min-heap $edgeHeap$. Computation of a tour for a MULE consists of two stages coded in two inner while loops.
+Given any tree $T$, we start from the given root node $root$. $root$ then becomes the current node $curr$. Then following steps of Prim's algorithm~\cite{Prim57}, we first mark $curr$ as visited, then we insert all the incident edges of the current node with unvisited nodes to the min-heap $edgeHeap$. Computation of a tour for a MULE consists of two stages coded in two inner while loops.
 
 
 
