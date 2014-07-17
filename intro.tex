@@ -1,18 +1,13 @@
 \chapter{Introduction}
 
 
-Wireless Sensor Networks consist of a large number of sensor nodes, which are battery-powered, low energy consuming devices. Wireless Sensor Networks (WSNs) are used for applications such as monitoring (e.g., pollution prevention~\cite{application2}, structures and buildings health), event detection (e.g. fire hazard ~\cite{firehazard}) and target tracking (e.g., surveillance~\cite{application3}). These devices perform three basic tasks:
+Wireless Sensor Networks consist of a large number of sensor nodes, which are battery-powered, low energy consuming devices. Wireless Sensor Networks (WSNs) are used for applications such as monitoring (e.g., pollution prevention~\cite{application2}, structures and buildings health), event detection (e.g. fire hazard ~\cite{application5}) and target tracking (e.g., surveillance~\cite{application3}). These devices perform three basic tasks:
 \begin{itemize}
 \item Sample a physical quantity from the surrounding environment
 \item Process and buffer the acquired data
 \item Transfer the data through wireless communications to a data collection point called sink node or base station.
 \end{itemize}
-The sensors, as soon as deployed on the field, identify their adjacent 
-sensors (neighbours), and are able to form an ad-hoc network. If this network is connected (each sensor is able to send data to another sensor on the field through one or multiple hops), then it is called a dense sensor 
-network. Such a network is used as basic infrastructure for routing 
-sensor-acquired data to the sink node (Base Station) 
-using WSN routing protocols~\cite{routingSurvey}. Occasionally, sink node
-may send data to all sensor nodes as well. 
+The sensors, as soon as deployed on the field, identify their adjacent sensors (neighbours), and are able to form an ad-hoc network. If this network is connected (each sensor is able to send data to another sensor on the field through one or multiple hops), then it is called a dense sensor network. Such a network is used as basic infrastructure for routing sensor-acquired data to the sink node (Base Station) using WSN routing protocols~\cite{routingSurvey}. Occasionally, sink node may send data to all sensor nodes as well. 
 
 However, dense networks are seldom realizable in practice. Usually, sensors are spread (air dropped) over a large geographical area resulting in a sparse network. This kind of networks are useful for applications (e.g., environmental monitoring applications~\cite{sparseEx}) where fine-grained sensing is not required. In sparse sensor networks, islands of sensor sub-networks are formed (WSN islands~\cite{intro2}), which cannot communicate to each other without external help. Data collection from this kind of network, without deploying additional sensors can be done using:
 \begin{itemize}
@@ -21,7 +16,7 @@ However, dense networks are seldom realizable in practice. Usually, sensors are 
 Long range and high power nodes, whose main purpose is to establish connectivity among such WSN islands, and their connectivity to the base station by relaying/receiving data to/from sensors out of range of the local island. Their placement in a sensor network is a well studied problem.
 \item Mobile data collectors (MDCs)~\cite{intro3} or Mobile Ubiquitous LAN Extensions (MULEs)~\cite{intro1}: 
   
-Controlled mobile robots acting as mobile sinks/Base stations/relay nodes. These can be programmed to tour any set of locations so as to collect data from the sensors at those positions, and relay the same to base station directly or through another MULE. Since the sensors have to wait for the MULE to arrive in range
+Controlled mobile robots acting as mobile sinks/Base stations/relay nodes. These can be programmed to tour any set of locations so as to collect data from the sensors at those positions,] and relay the same to base station directly or through another MULE. Since the sensors have to wait for the MULE to arrive in range
 \begin{enumerate}
 \item Sensors may be required to have a battery powered passive wake-up radio device~\cite{intro4}, which can be triggered by a nearby MULE. MULE will then be able to collect data from the sensor, and forward the collected data 
 when it is in proximity of the base station (or another MULE assigned to relay to the base station~\cite{sim2}). %it will forward this collected data.
@@ -34,7 +29,7 @@ The MULE approach naturally saves energy of the sensors (hence prolongs network 
 
 The main contribution of this work is to add to these studies. Usually these works make use of multiple MULEs by partitioning the network into "equal" parts (in terms of TSP tour time of that partition, together with the time taken to collect data from sensors in that partition), and each partition is assigned to a MULE. Our work takes the required latency constraint of the sensor network application as input and computes the number of MULEs required along with their trajectories. We assume MULEs can move freely in the plane of the sensor network, and they have identical, constant speed.
 
-In the chapter ~\nameref{chap:location_nodes}, we first talk about the components of the general problem of data MULE scheduling, and its part that we are concerned with: Path selection. Then we introduce location nodes and the heuristics suggested to compute them. We also show justification of our choice of heuristic with performance measures. In the chapter ~\nameref{chap:steiner}, we describe our main heuristic for path selection and provide pseudocode for it. First we describe a simpler version (which ignores time required by a MULE at a location node) for benefit of comprehension. Then we describe the full version and its limitations.
+In the chapter ~\nameref{chap:location_nodes}, we first talk about the components of the general problem of data MULE scheduling, and its part that we are concerned with: Path selection. Then we introduce location nodes and the heuristics suggested to compute them. We also show justification of our choice of heuristic with performance measures. In the chapter ~\nameref{chap:steiner}, we describe our main heuristic for path selection and provide pseudocode for it.
 
 The future works chapter contains two directions this work can take, which we can see at the time. First is the addition of obstacle avoidance capability to the algorithm, and the second is the application of another work (on optimization of TSP tours in presence of neighbourhoods) into this work.
 
