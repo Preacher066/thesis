@@ -24,7 +24,7 @@ There are two kinds of geometric disc cover problems:
 
 We use the problem GMDC here. Compared to GMDC, GDUDC is a much better studied problem. Therefore, we initially planned to get an intermediate solution of GMDC through some heuristic/PTAS, then apply GDUDC problem for a better solution. We tried and failed to implement one solution \cite{carmi} for GDUDC. Therefore, we depend completely upon the following heuristics for disc covering.
 
-There are many geometric disc covering heuristics and PTASs \cite{} for GMDC already known, any one of which can be used here. But since PTAS's having high running time \cite{hex} (and considerably difficult to implement), we used heuristics for our implementation. Following are some heuristics that we tested on sample fields.
+There are many heuristics and approximation schemes \cite{shifting} \cite{appScheme} for GMDC already known, any one of which can be used here. Following are four heuristics (JGRD,GRD,SEL,HEX) and one approximation scheme (SHFT) that we tested on sample fields.
 
 \subsection{Preliminaries}
 \label{subsec:prelim}
@@ -70,8 +70,15 @@ To cover a strip of width $w$, we again apply the shifting strategy. We divide t
 
 \end{figure}
 
-\item[SEL] For any sensor $s$, let $L$ be the set of discs covering it. Pick the disc which covers the least number of sensors.
-\item[RND] Randomly pick discs until all the sensors are covered. Just for sake of comparision with other heuristics.
+\item[SEL] For any sensor $s$, let $C_s$ be the set of crosses (refer \ref{subsec:prelim}) covering it. Pick the cross which covers the least number of sensors. Keep iterating on the still uncovered sensors, until all the sensors are covered.
+\item[RND] Randomly pick crosses until all the sensors are covered. Just for sake of comparision with other heuristics.
 \end{description}
 
+\subsection{Results}
+
+The above heuristics and the approximation scheme were tested on a 1000m$\times$1000m field with discs of radius 50m. The number of sensors are increased form 50 to 100 in steps of 10. As we can see, GRD performed the best. Therefore we used of for our implementation.
+
+\begin{figure}[H]
 \includegraphics[width=15cm]{discs}
+\caption{Results of testing above heuristics and the approximation scheme on a 1000m$\times$1000m field}\label{fig:discResults}
+\end{figure}
