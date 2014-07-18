@@ -46,7 +46,7 @@ obtain covering sensor fields. We provide a synopsis of these techniques
 before discussing the results.
 
 \paragraph*{OPT} 
-This is an algorithm for the optimum solution, which uses brute-force to search for the minimum set cover in order to find the optimum solution. At first we create a table of the information regarding which cross (refer~\ref{subsec:prelim}) covers which of the sensors. These crosses act like the subsets of the set of all sensors containing the sensors they cover. Next, we find the minimum set cover using brute-force. Needless to say, the running time of this algorithm blows up very fast.
+This is an algorithm for the optimum solution, which uses brute-force to search for the minimum set cover in order to find the optimum solution. At first we create a table of the information regarding which cross (refer section ~\ref{subsec:prelim}) covers which of the sensors. These crosses act like the subsets of the set of all sensors containing the sensors they cover. Next, we find the minimum set cover using brute-force. Needless to say, the running time of this algorithm blows up very fast.
 
 \paragraph*{HEX} 
 In this heuristic~\cite{hex}, the sensor field is initially tiled with regular hexagons of sides equal to the radius of the discs to be used (see, figure~\ref{fig:hex}). A sensor is said to be covered by a hexagon, if it is closer to its center than the center of any other hexagon.
@@ -62,7 +62,7 @@ This is originally a set cover heuristic~\cite{jgreedy}. Consider the set $P$ as
 The reference~\cite{jgreedy} gives a greedy heuristic for this.
 
 \paragraph*{GRD} 
-(We have designed this heuristic, and we are not aware of any other work using it) Let the list of all sensor positions in the given field of sensor nodes be $L$. First sort $L$ according to their $(x,y)$ position co-ordinates (first by $x$ co-ordinate and then by $y$ co-ordinate). Starting from the first sensor node $p$ in the list, pick the disc which covers maximum number of uncovered sensor nodes and covers $p$ too. To do this, compute all the crosses in $C$ which involve $p$ (refer \ref{subsec:prelim} for "crosses" and "involving a node"). Place a disc of radius $R$ at each of the crosses, and choose the cross whose disc covers the most number of points. Choose the next uncovered sensor in $L$ and repeat the covering procedure, until all sensors are covered.
+We have designed this heuristic. Let the list of all sensor positions in the given field of sensor nodes be $L$. First sort $L$ according to their $(x,y)$ position co-ordinates (first by $x$ co-ordinate and then by $y$ co-ordinate). Starting from the first sensor node $p$ in the list, pick the disc which covers maximum number of uncovered sensor nodes and covers $p$ too. To do this, compute all the crosses in $C$ which involve $p$ (refer \ref{subsec:prelim} for "crosses" and "involving a node"). Place a disc of radius $R$ at each of the crosses, and choose the cross whose disc covers the most number of points. Choose the next uncovered sensor in $L$ and repeat the covering procedure, until all sensors are covered.
 
 \paragraph*{SHFT} 
 The shifting strategy is derived from~\cite{shifting}. This algorithm takes two input parameters: $l$ (shifting parameter, chosen later) and $D$ (diameter of discs to be used for covering). Let the field be a square of length $W$. First we divide the field into vertical strips of width $l \times D$, as shown in figure~\ref{fig:origStrip}. We do disc cover on these vertical strips (explained later) individually (treating them as separate fields. The union of the solutions of all the vertical strips is clearly a solution to the problem. This solution is assigned to $current\_solution$. Now, the whole partition of strips is shifted horizontally, away from the origin, by the amount of $D$ (as shown in figure \ref{fig:shiftStrip}). Again, all the strips are covered with discs (to be explained later how), and the union of the solutions of these shifted vertical strips another solution, assigned to $new\_solution$. If the size of $new\_solution$(the number of discs in the solution) is less than the size of $current\_solution$, the current solution now becomes $new\_solution$. We continue shifting the partition and measuring the solutions thus generated $l-1$ times.
@@ -87,7 +87,7 @@ To cover a strip of width $w$, we again apply the shifting strategy. We divide t
 \paragraph*{SEL} 
   
 For any sensor $s$, let $C_s$ be the set of crosses 
-(refer~\ref{subsec:prelim}) covering it. Pick the cross which covers the 
+(refer the subsection ~\ref{subsec:prelim}) covering it. Pick the cross which covers the 
 least number of sensors. Keep iterating on the remaining uncovered sensors, until all the sensors are covered.
 
 \paragraph*{RND} Randomly pick crosses until all the sensors are covered. This not a good heuristic, but we have include it just for sake of comparision with other heuristics.
