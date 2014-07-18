@@ -16,7 +16,7 @@ In this thesis our focus is only on path selection of the MULEs.
 
 \section{Geometric Disc Covering and Location Nodes}
 
-In the interest of collecting data from sensors in one hop, we propose to cover the sensor field with circular discs of radius equal to the range of the sensors. The centers of these will be locations where MULEs will pause to collect data from the sensors. For convinience in description, we will refer to these positions as \emph{location nodes}. Our path selection heuristic, proposed in Chapter~\ref{chap:steiner}, uses location nodes as the nodes of a graph embedded on the 2D plane. Underlying assumptions in our approach are: (i) communication region of a sensor is approximated to a circular disc, (ii) all sensor have same communication range, and (ii) the range of the MULE is greater than that of any sensor. % (we assume all the sensors are identical in communication range). The centres of these discs are called \emph{location nodes}.
+In the interest of collecting data from sensors in one hop, we propose to cover the sensor field with circular discs of radius equal to the range of the sensors. The centers of these will be locations where MULEs will pause to collect data from the sensors. For convinience in description, we will refer to these positions as \emph{location nodes}. At a location node, a MULE polls nearby sensors with the same transmission power as sensors, such that sensors that receive the polling messages can upload packets to the MULE within a single hop. Each sensor may be covered by more than one location nodes, but each sensor is associated with only one of these location nodes for data uploading to the MULE. Our path selection heuristic, proposed in Chapter~\ref{chap:steiner}, uses location nodes as the nodes of a graph embedded on the 2D plane, referred to as \emph{location graph}. Underlying assumptions in our approach are: (i) communication region of a sensor is approximated to a circular disc, (ii) all sensor have same communication range, and (ii) the range of the MULE is greater than that of any sensor. % (we assume all the sensors are identical in communication range). The centres of these discs are called \emph{location nodes}.
 
 There are two types of geometric disc cover problems:
 
@@ -28,9 +28,9 @@ There are two types of geometric disc cover problems:
 Though GDUDC was much more extensively explored compared to GMDC, we have 
 used GMDC. Initially, we planned to get an intermediate solution of GMDC through some heuristic/Approximation Scheme, then apply techniques for GDUDC problem for a better solution. Due to our unclear understanding of the algorithm, however, we tried but failed to implement one solution~\cite{carmi} for GDUDC. Therefore, we relied on heuristics for find a disc covering.
 
-Many heuristics and approximation schemes~\cite{shifting}, \cite{appScheme} have been proposed for GMDC. Any one of these can be possible candidates. We considered four main heuristics referred to as JGRD,GRD,SEL,HEX, and one approximation scheme know as SHFT and carried out experiments for their efficacy in sample fields. 
+Many heuristics and approximation schemes~\cite{shifting}, \cite{appScheme} have been proposed for GMDC. Any one of these can be possible candidates. We considered four main heuristics, here referred to as, Johnson's greedy set cover (JGRD), Greedy cover of sorted positions (GRD), Selection of smallest cover (SEL), Hexagonal tiling (HEX), and one approximation scheme know as Shifting strategy (SHFT) and carried out experiments for their efficacy in sample fields. 
 
-{\bf Comments: You need to give full form of each abbreviations first time you used them. There after abbreviations can be used.}
+%{\bf Comments: You need to give full form of each abbreviations first time you used them. There after abbreviations can be used.}
 
 \subsection{Preliminaries}\label{subsec:prelim}
 
@@ -50,12 +50,12 @@ This is an algorithm for the optimum solution, which uses brute-force to search 
 
 \paragraph*{HEX} 
 In this heuristic~\cite{hex}, the sensor field is initially tiled with regular hexagons of sides equal to the radius of the discs to be used (see, figure~\ref{fig:hex}). A sensor is said to be covered by a hexagon, if it is closer to its center than the center of any other hexagon.
-\begin{center}
-\begin{figure}[H]
-\includegraphics[width=12cm]{figures/hex.png}
+
+\begin{figure}
+\centering
+\includegraphics[width=8cm]{figures/hex.png}
 \caption{Hexagonal tiling}\label{fig:hex}
 \end{figure}
-\end{center}
 
 \paragraph*{JGRD} 
 This is originally a set cover heuristic~\cite{jgreedy}. Consider the set $P$ as the target set to be achieved from the union of smaller subsets, and the discs centered at the crosses in $C$ represent the subsets of points covered by them. Our problem of MGDC then becomes a set cover problem. 
@@ -70,14 +70,14 @@ The shifting strategy is derived from~\cite{shifting}. This algorithm takes two 
 To cover a strip of width $w$, we again apply the shifting strategy. We divide the strip into squares of side $w$ (and maybe a remainder rectangle, in case $W$ leaves a remainder upon dividing with $w$). To cover this sqaure (of size $w \times w$) with discs of diameter D, we use the strategy OPT described above. The shifting of this partition is done by the amount $D$ just like in the original field, and the smallest solution is chosen. The shifting parameter $l$ depends on the time constraint one has regarding the running time of this algorithm. It is chosen in such a way that the problem size in each sqaure (of size $w \times w$) is small enough for the OPT to run in required time constraint.
 
 \begin{figure}[H]
-
+\centering
 \includegraphics[width=15cm]{figures/beforeShift.png}
 \caption{Original division of the field into vertical strips. $l$ is 3 here.} \label{fig:origStrip}
 
 \end{figure}
 
 \begin{figure}[H]
-
+\centering
 \includegraphics[width=15cm]{figures/afterShift.png}
 
 \caption{After the shift right by the amount $D$}\label{fig:shiftStrip}
@@ -97,6 +97,7 @@ least number of sensors. Keep iterating on the remaining uncovered sensors, unti
 The above heuristics and the approximation scheme were tested on a 1000m$\times$1000m field with discs of radius 50m. The number of sensors are increased form 50 to 100 in steps of 10. As we can see, GRD performed the best. Therefore we chose GRD of for our implementation.
 
 \begin{figure}[H]
+\centering
 \includegraphics[width=15cm]{discs}
 \caption{Results of testing above heuristics and the approximation scheme on a 1000m$\times$1000m field}\label{fig:discResults}
 \end{figure}
