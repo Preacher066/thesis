@@ -92,8 +92,9 @@ least number of sensors. Keep iterating on the remaining uncovered sensors, unti
 
 \paragraph*{RND} Randomly pick crosses until all the sensors are covered. This not a good heuristic, but we have include it just for sake of comparision with other heuristics.
 
-
-\begin{center}
+\begin{table}
+\centering
+\caption{Pros and cons of the heuristics implemented}
  \begin{tabular}{||c c c||} 
  \hline
  Heuristic & Pro & Con  \\  
@@ -109,7 +110,7 @@ least number of sensors. Keep iterating on the remaining uncovered sensors, unti
  HEX & Linear memory requirement and Linear running time & Performed worse than RND \\
  \hline
 \end{tabular}
-\end{center}
+\end{table}
 
 
 \subsection{Results of testing the heuristics' performance}
