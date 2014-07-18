@@ -92,7 +92,27 @@ least number of sensors. Keep iterating on the remaining uncovered sensors, unti
 
 \paragraph*{RND} Randomly pick crosses until all the sensors are covered. This not a good heuristic, but we have include it just for sake of comparision with other heuristics.
 
-\subsection{Results of Experiments}
+
+\begin{center}
+ \begin{tabular}{||c c c||} 
+ \hline
+ Heuristic & Pro & Con  \\  
+ \hline\hline
+ JGRD & -- & $O(n^3)$ memory usage \\ 
+ \hline
+ GRD & Performs the best among the tested heuristics & $O(n^3log(n)) Running time$ \\
+ \hline
+ SEL & Linear running time & $O(n^3)$ memory usage \\
+ \hline
+ SHFT & Controllable approximation ratio & Large running time \\
+ \hline
+ HEX & Linear memory requirement and Linear running time & Performed worse than RND \\
+ \hline
+\end{tabular}
+\end{center}
+
+
+\subsection{Results of testing the heuristics' performance}
 
 The above heuristics and the approximation scheme were tested on a 1000m$\times$1000m field with discs of radius 50m. The number of sensors are increased form 50 to 100 in steps of 10. As we can see, GRD performed the best. Therefore we chose GRD of for our implementation.
 

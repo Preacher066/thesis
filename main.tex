@@ -18,18 +18,20 @@
 \pagestyle{headings}
 
 \begin{document}
-\pagenumbering{roman}
-
 \doublespacing
 \input{title.tex}
 \input{certificate.tex}
 \input{abstract.tex}
 
+\setcounter{page}{4}
 \tableofcontents
+\setcounter{page}{5}
 \listoffigures
+\setcounter{page}{6}
 
 \pagenumbering{arabic}
 \setcounter{page}{1}
+
 \input{intro.tex}
 \input{location.tex}
 \input{related.tex}
