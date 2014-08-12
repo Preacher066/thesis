@@ -1,4 +1,4 @@
-\chapter{Results}\label{chapter:5}
+\chapter{Results and Conclusions}\label{chapter:5}
 
 %\section{Experiment setup}
 
@@ -16,11 +16,13 @@ For each of the above cases we generate 6 random distributions of the sensors, a
 
 Each of the following subsections contain results for the respective cases.
 
-As we can see from the "Number of MULEs required vs Required latency bound" graphs of each case, the decrease in number of MULEs required to fulfill the required latency bound, is not uniform with respect to the increase in the latency bound. For instance, in 70 sensors case, for an increase of latency bound from 100 seconds to 290 seconds decreases the num,ber of MULEs required from 13 to 6. However, for further drop in number of MULEs from 6 to 1, the increase in latency bound is from 290 seconds to 1140 seconds. Similarly, from the "Average latency achieved vs Number of MULEs employed" graphs of each case, we can observe that the decrease in the affordable latency bound is not uniform with respect to the increase in the number of MULEs employed. E.g in 70 sensors case, increasing the number of MULEs from 1 to 8 causes the affordable latency to drop from 1100 seconds to 202 seconds. But, a further increase of 7 MULEs decreases the latency only to 100 seconds. Therefore, we can conclude that the relation between latency bound and the number of MULEs required is not linear, and after a certain number of MULEs employed, additional MULEs do not achieve significant latency decrease. Let us call this number of MULEs a "flat point" for convinience of reference. Also, let the number of MULEs to achieve latency of 100 seconds in a case be called its "max point". The existence of flat points should be apparent from the table below. Let $\delta f$ be decrease in latency from 1 MULE to flat point and $\delta m$ be decrease in latency from flat point to max point in the following table.
+As we can see from the "Number of MULEs required vs Required latency bound" graphs of each case, the decrease in number of MULEs required to fulfill the required latency bound, is not uniform with respect to the increase in the latency bound. For instance, in 70 sensors case, for an increase of latency bound from 100 seconds to 290 seconds decreases the num,ber of MULEs required from 13 to 6. However, for further drop in number of MULEs from 6 to 1, the increase in latency bound is from 290 seconds to 1140 seconds. Similarly, from the "Average latency achieved vs Number of MULEs employed" graphs of each case, we can observe that the decrease in the affordable latency bound is not uniform with respect to the increase in the number of MULEs employed. E.g in 70 sensors case, increasing the number of MULEs from 1 to 8 causes the affordable latency to drop from 1100 seconds to 202 seconds. But, a further increase of 7 MULEs decreases the latency only to 100 seconds. 
+
+Therefore, we can conclude that the relation between latency bound and the number of MULEs required is not linear, and after a certain number of MULEs employed, additional MULEs do not achieve significant latency decrease. Let us call this number of MULEs a "flat point" for convinience of reference. Also, let the number of MULEs to achieve latency of 100 seconds in a case be called its "max point". The existence of flat points should be apparent from the table \ref{table:flat}. In the table, $\delta f$ denotes decrease in latency from 1 MULE to flat point and $\delta m$ is decrease in latency from flat point to max point.
 
 \begin{table}
 \centering
-\caption{Table of flat points in sample sensor node fields}
+\caption{Table of flat points in sample sensor node fields} \label{table:flat}
  \begin{tabular}{||c c c c c||}
  \hline
  Number of sensors & max point & flat point & $\delta f$ & $\delta m$ \\  
